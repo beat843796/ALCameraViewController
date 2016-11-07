@@ -13,6 +13,8 @@ import Photos
 public typealias CameraViewCompletion = (UIImage?, PHAsset?) -> Void
 
 public extension CameraViewController {
+    
+  
     public class func imagePickerViewController(croppingEnabled: Bool, completion: @escaping CameraViewCompletion) -> UINavigationController {
         let imagePicker = PhotoLibraryViewController()
         let navigationController = UINavigationController(rootViewController: imagePicker)
@@ -47,6 +49,8 @@ public class CameraViewController: UIViewController {
     var didUpdateViews = false
     var allowCropping = false
     var animationRunning = false
+    
+    var customConfirmController: UIViewController?;
     
     var lastInterfaceOrientation : UIInterfaceOrientation?
     var onCompletion: CameraViewCompletion?
@@ -155,6 +159,14 @@ public class CameraViewController: UIViewController {
         return view
     }()
   
+    
+    public convenience init(croppingEnabled: Bool, allowsLibraryAccess: Bool = true, customConfirmController: UIViewController, completion: @escaping CameraViewCompletion) {
+        
+        self.init(croppingEnabled: croppingEnabled, allowsLibraryAccess: allowsLibraryAccess, completion: completion);
+        
+        self.customConfirmController = customConfirmController;
+    }
+    
     public init(croppingEnabled: Bool, allowsLibraryAccess: Bool = true, completion: @escaping CameraViewCompletion) {
         super.init(nibName: nil, bundle: nil)
         onCompletion = completion
@@ -162,6 +174,8 @@ public class CameraViewController: UIViewController {
         cameraOverlay.isHidden = !allowCropping
         libraryButton.isEnabled = allowsLibraryAccess
         libraryButton.isHidden = !allowsLibraryAccess
+        
+        customConfirmController = nil;
     }
   
     required public init?(coder aDecoder: NSCoder) {
