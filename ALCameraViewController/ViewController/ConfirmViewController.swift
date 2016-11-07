@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-public class ConfirmViewController: UIViewController, UIScrollViewDelegate {
+public class ConfirmViewController: UIViewController, UIScrollViewDelegate, ConfirmController {
     
     let imageView = UIImageView()
     @IBOutlet weak var scrollView: UIScrollView!
@@ -25,6 +25,10 @@ public class ConfirmViewController: UIViewController, UIScrollViewDelegate {
     public var onComplete: CameraViewCompletion?
     
     var asset: PHAsset!
+    
+    public convenience required init(asset: PHAsset) {
+        self.init(asset: asset, allowsCropping: false)
+    }
     
     public init(asset: PHAsset, allowsCropping: Bool) {
         self.allowsCropping = allowsCropping
