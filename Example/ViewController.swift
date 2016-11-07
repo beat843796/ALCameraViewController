@@ -29,7 +29,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func openLibrary(_ sender: AnyObject) {
-        let libraryViewController = CameraViewController.imagePickerViewController(croppingEnabled: croppingEnabled) { image, asset in
+        let libraryViewController = CameraViewController.imagePickerViewController(croppingEnabled: croppingEnabled, customConfirmController: nil) { image, asset in
             self.imageView.image = image
             self.dismiss(animated: true, completion: nil)
         }
