@@ -13,7 +13,7 @@ import Photos
 public typealias CameraViewCompletion = (UIImage?, PHAsset?) -> Void
 
 public extension CameraViewController {
-    public class func imagePickerViewController(croppingEnabled: Bool, completion: @escaping CameraViewCompletion) -> UINavigationController {
+    public class func imagePickerViewController(completion: @escaping CameraViewCompletion) -> UINavigationController {
         let imagePicker = PhotoLibraryViewController()
         let navigationController = UINavigationController(rootViewController: imagePicker)
         
@@ -23,7 +23,7 @@ public extension CameraViewController {
 
         imagePicker.onSelectionComplete = { [weak imagePicker] asset in
             if let asset = asset {
-                let confirmController = ConfirmViewController(asset: asset, allowsCropping: croppingEnabled)
+                let confirmController = ConfirmViewController(asset: asset)
                 confirmController.onComplete = { [weak imagePicker] image, asset in
                     if let image = image, let asset = asset {
                         completion(image, asset)
@@ -45,7 +45,7 @@ public extension CameraViewController {
 public class CameraViewController: UIViewController {
     
     var didUpdateViews = false
-    var allowCropping = false
+
     var animationRunning = false
     
     var lastInterfaceOrientation : UIInterfaceOrientation?
@@ -155,11 +155,10 @@ public class CameraViewController: UIViewController {
         return view
     }()
   
-    public init(croppingEnabled: Bool, allowsLibraryAccess: Bool = true, completion: @escaping CameraViewCompletion) {
+    public init(allowsLibraryAccess: Bool = true, completion: @escaping CameraViewCompletion) {
         super.init(nibName: nil, bundle: nil)
         onCompletion = completion
-        allowCropping = croppingEnabled
-        cameraOverlay.isHidden = !allowCropping
+        
         libraryButton.isEnabled = allowsLibraryAccess
         libraryButton.isHidden = !allowsLibraryAccess
     }
@@ -502,7 +501,7 @@ public class CameraViewController: UIViewController {
     }
     
     internal func showLibrary() {
-        let imagePicker = CameraViewController.imagePickerViewController(croppingEnabled: allowCropping) { image, asset in
+        let imagePicker = CameraViewController.imagePickerViewController() { image, asset in
 
             defer {
                 self.dismiss(animated: true, completion: nil)
@@ -546,7 +545,7 @@ public class CameraViewController: UIViewController {
     }
     
     private func startConfirmController(asset: PHAsset) {
-        let confirmViewController = ConfirmViewController(asset: asset, allowsCropping: allowCropping)
+        let confirmViewController = ConfirmViewController(asset: asset)
         confirmViewController.onComplete = { image, asset in
             if let image = image, let asset = asset {
                 self.onCompletion?(image, asset)
