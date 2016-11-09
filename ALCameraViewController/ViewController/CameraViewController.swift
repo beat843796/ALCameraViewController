@@ -15,41 +15,24 @@ public typealias CameraViewCompletion = (UIImage?, PHAsset?) -> Void
 public extension CameraViewController {
     
   
-    public class func imagePickerViewController(croppingEnabled: Bool, customConfirmController: UIViewController?, completion: @escaping CameraViewCompletion) -> UINavigationController {
+    public class func imagePickerViewController(croppingEnabled: Bool, completion: @escaping CameraViewCompletion) -> UINavigationController {
         let imagePicker = PhotoLibraryViewController()
         let navigationController = UINavigationController(rootViewController: imagePicker)
-    
+        
         navigationController.navigationBar.barTintColor = UIColor.black
         navigationController.navigationBar.barStyle = UIBarStyle.black
         navigationController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
 
-        
-        
         imagePicker.onSelectionComplete = { [weak imagePicker] asset in
             if let asset = asset {
-
-                var confirmController: UIViewController!
-                
-                if(customConfirmController == nil) {
-                    
-                    let confirmationController = ConfirmViewController(asset: asset, allowsCropping: croppingEnabled)
-                    confirmationController.onComplete = { [weak imagePicker] image, asset in
-                        if let image = image, let asset = asset {
-                            completion(image, asset)
-                        } else {
-                            imagePicker?.dismiss(animated: true, completion: nil)
-                        }
+                let confirmController = ConfirmViewController(asset: asset, allowsCropping: croppingEnabled)
+                confirmController.onComplete = { [weak imagePicker] image, asset in
+                    if let image = image, let asset = asset {
+                        completion(image, asset)
+                    } else {
+                        imagePicker?.dismiss(animated: true, completion: nil)
                     }
-                    
-                    confirmController = confirmationController;
-                    
-                }else {
-                    
-                    confirmController = customConfirmController;
-                    
                 }
-                
-                
                 confirmController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
                 imagePicker?.present(confirmController, animated: true, completion: nil)
             } else {
@@ -533,7 +516,7 @@ public class CameraViewController: UIViewController {
     }
     
     internal func showLibrary() {
-        let imagePicker = CameraViewController.imagePickerViewController(croppingEnabled: allowCropping, customConfirmController: self.customConfirmController!) { image, asset in
+        let imagePicker = CameraViewController.imagePickerViewController(croppingEnabled: allowCropping) { image, asset in
 
             defer {
                 self.dismiss(animated: true, completion: nil)
@@ -577,29 +560,14 @@ public class CameraViewController: UIViewController {
     }
     
     private func startConfirmController(asset: PHAsset) {
-
-        var confirmViewController: UIViewController!
-        
-        if(self.customConfirmController == nil) {
-            
-            let confirmationViewController = ConfirmViewController(asset: asset, allowsCropping: allowCropping)
-            confirmationViewController.onComplete = { image, asset in
-                if let image = image, let asset = asset {
-                    self.onCompletion?(image, asset)
-                } else {
-                    self.dismiss(animated: true, completion: nil)
-                }
+        let confirmViewController = ConfirmViewController(asset: asset, allowsCropping: allowCropping)
+        confirmViewController.onComplete = { image, asset in
+            if let image = image, let asset = asset {
+                self.onCompletion?(image, asset)
+            } else {
+                self.dismiss(animated: true, completion: nil)
             }
-            
-            confirmViewController = confirmationViewController
-            
-        }else {
-            
-            confirmViewController = customConfirmController;
-            
         }
-        
-        
         confirmViewController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
         present(confirmViewController, animated: true, completion: nil)
     }
