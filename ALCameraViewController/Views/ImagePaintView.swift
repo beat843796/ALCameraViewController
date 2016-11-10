@@ -39,6 +39,8 @@ class ImagePaintView: UIView{
         
     }
     
+    
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -98,12 +100,16 @@ class ImagePaintView: UIView{
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        print("touches moved")
+        
         let touch = touches.first
         
         point0 = point1
         point1 = point2
         point2 = point3
         point3 = touch!.location(in: self)
+        
+        drawToCache()
         
         
     }
@@ -115,6 +121,8 @@ class ImagePaintView: UIView{
         if !erasing {
             
             // DRAW
+            
+            if(point1.x > -1) {
             
             cacheContext?.setStrokeColor(color.cgColor)
             cacheContext?.setLineCap(.round)
@@ -162,15 +170,14 @@ class ImagePaintView: UIView{
             
             
             cacheContext?.move(to: point1)
-            cacheContext?.addCurve(to: CGPoint(x:ctrl1x,y:ctrl1y), control1: CGPoint(x:ctrl2x,y:ctrl2y), control2: point2)
-            
+            cacheContext?.addCurve(to: point2, control1: CGPoint(x:ctrl2x,y:ctrl2y), control2: CGPoint(x:ctrl1x,y:ctrl1y))
             cacheContext?.strokePath()
             
             let dirtyPoint1 = CGRect(origin: CGPoint(x:point1.x-CGFloat(15), y:point1.y-CGFloat(15)), size: CGSize(width: 30, height: 30))
             let dirtyPoint2 = CGRect(origin: CGPoint(x:point2.x-CGFloat(15), y:point2.y-CGFloat(15)), size: CGSize(width: 30, height: 30))
             self.setNeedsDisplay(dirtyPoint1.union(dirtyPoint2))
             
-            
+            }
             
         }else {
             
