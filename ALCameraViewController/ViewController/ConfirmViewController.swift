@@ -335,24 +335,38 @@ public class ConfirmViewController: UIViewController {
         
         disable()
         
-        imageView.isHidden = true
-        paintView.isHidden = true
+        
         
         let spinner = showSpinner()
 
         if(paintView.hasPainting) {
             
-            // Process painting
+  
             
-            self.processImages()
+            DispatchQueue.global(qos: .background).async { [weak self]
+                () -> Void in
+ 
+                    self?.processImages()
+                
+                            DispatchQueue.main.async {
+                                () -> Void in
+                                
+                                self?.onComplete?(self?.chosenImage)
+                                
+                                self?.hideSpinner(spinner)
+                                
+                            }
+
+                
+            }
             
-            self.onComplete?(chosenImage)
+
             
-            self.hideSpinner(spinner)
             
             
         }else {
-            
+            imageView.isHidden = true
+            paintView.isHidden = true
             
             var fetcher = SingleImageFetcher()
                 .onSuccess { image in
