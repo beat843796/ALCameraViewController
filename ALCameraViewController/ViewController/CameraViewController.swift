@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-public typealias CameraViewCompletion = (UIImage?, PHAsset?) -> Void
+public typealias CameraViewCompletion = (UIImage?) -> Void
 
 public extension CameraViewController {
     public class func imagePickerViewController(completion: @escaping CameraViewCompletion) -> UINavigationController {
@@ -24,17 +24,18 @@ public extension CameraViewController {
         imagePicker.onSelectionComplete = { [weak imagePicker] asset in
             if let asset = asset {
                 let confirmController = ConfirmViewController(asset: asset)
-                confirmController.onComplete = { [weak imagePicker] image, asset in
-                    if let image = image, let asset = asset {
-                        completion(image, asset)
+                confirmController.onComplete = { [weak imagePicker] image in
+                    if let image = image {
+                        completion(image)
                     } else {
+                        print("dismiss")
                         imagePicker?.dismiss(animated: true, completion: nil)
                     }
                 }
                 confirmController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
                 imagePicker?.present(confirmController, animated: true, completion: nil)
             } else {
-                completion(nil, nil)
+                completion(nil)
             }
         }
         
@@ -43,6 +44,8 @@ public extension CameraViewController {
 }
 
 public class CameraViewController: UIViewController {
+    
+    public var saveImageToLibrary = false
     
     var didUpdateViews = false
 
@@ -478,7 +481,25 @@ public class CameraViewController: UIViewController {
                     self.toggleButtons(enabled: true)
                     return
                 }
-                self.saveImage(image: image)
+                
+                if(self.saveImageToLibrary == true) {
+                    self.saveImage(image: image)
+                }else {
+                    
+                    let confirmViewController = ConfirmViewController(image: image)
+                    confirmViewController.onComplete = { image in
+                        if let image = image {
+                            self.onCompletion?(image)
+                        } else {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                    confirmViewController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
+                    self.present(confirmViewController, animated: true, completion: nil)
+                    
+                }
+                
+                
             }
         }
     }
@@ -497,21 +518,21 @@ public class CameraViewController: UIViewController {
     }
     
     internal func close() {
-        onCompletion?(nil, nil)
+        onCompletion?(nil)
     }
     
     internal func showLibrary() {
-        let imagePicker = CameraViewController.imagePickerViewController() { image, asset in
+        let imagePicker = CameraViewController.imagePickerViewController() { image in
 
             defer {
                 self.dismiss(animated: true, completion: nil)
             }
 
-            guard let image = image, let asset = asset else {
+            guard let image = image else {
                 return
             }
             
-            self.onCompletion?(image, asset)
+            self.onCompletion?(image)
         }
         
         present(imagePicker, animated: true) {
@@ -546,9 +567,9 @@ public class CameraViewController: UIViewController {
     
     private func startConfirmController(asset: PHAsset) {
         let confirmViewController = ConfirmViewController(asset: asset)
-        confirmViewController.onComplete = { image, asset in
-            if let image = image, let asset = asset {
-                self.onCompletion?(image, asset)
+        confirmViewController.onComplete = { image in
+            if let image = image {
+                self.onCompletion?(image)
             } else {
                 self.dismiss(animated: true, completion: nil)
             }

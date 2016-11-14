@@ -32,6 +32,8 @@ public class ConfirmViewController: UIViewController {
     
     var asset: PHAsset!
     
+    var image: UIImage!
+    
     var chosenImage: UIImage!
     
     public init(asset: PHAsset) {
@@ -39,6 +41,13 @@ public class ConfirmViewController: UIViewController {
         self.asset = asset
         super.init(nibName: nil, bundle: nil)
     }
+
+    public init(image: UIImage) {
+        
+        self.image = image
+        super.init(nibName: nil, bundle: nil)
+    }
+
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -115,6 +124,15 @@ public class ConfirmViewController: UIViewController {
        
         
         guard let asset = asset else {
+            
+            
+            if self.image != nil {
+            
+                self.configureWithImage(self.image)
+                self.enable()
+            }
+            
+            
             return
         }
         
@@ -291,13 +309,15 @@ public class ConfirmViewController: UIViewController {
     }
     
     internal func cancel() {
-        onComplete?(nil, nil)
+        onComplete?(nil)
     }
     
     internal func processImages() {
         
         let firstImage = imageView.image!
         let secondImage = paintView.paintedImage()!
+        
+        print("processing images")
         
         let newImageSize = CGSize(width: firstImage.size.width, height: firstImage.size.height)
         
@@ -321,26 +341,39 @@ public class ConfirmViewController: UIViewController {
         let spinner = showSpinner()
 
         if(paintView.hasPainting) {
+            
+            // Process painting
+            
+            self.processImages()
+            
+            self.onComplete?(chosenImage)
+            
+            self.hideSpinner(spinner)
+            
+            
         }else {
+            
+            
+            var fetcher = SingleImageFetcher()
+                .onSuccess { image in
+                    self.onComplete?(image)
+                    self.hideSpinner(spinner)
+                    self.enable()
+                }
+                .onFailure { error in
+                    self.hideSpinner(spinner)
+                    self.showNoImageScreen(error)
+                }
+                .setAsset(asset)
+            
+            
+            
+            fetcher = fetcher.fetch()
             
         }
             
         
-        var fetcher = SingleImageFetcher()
-            .onSuccess { image in
-                self.onComplete?(image, self.asset)
-                self.hideSpinner(spinner)
-                self.enable()
-           }
-            .onFailure { error in            
-                self.hideSpinner(spinner)
-                self.showNoImageScreen(error)
-            }
-            .setAsset(asset)
         
-
-        
-        fetcher = fetcher.fetch()
     }
     
 

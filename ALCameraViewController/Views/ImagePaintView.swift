@@ -47,7 +47,13 @@ class ImagePaintView: UIView{
     
     public func paintedImage() -> UIImage? {
         
-        return nil
+        //var context = UIGraphicsGetCurrentContext();
+        let cacheImage =  cacheContext?.makeImage()
+        let image = UIImage.init(cgImage: cacheImage!, scale: 1.0, orientation: UIImageOrientation.downMirrored)
+        
+        return image;
+        
+        
     }
     
     

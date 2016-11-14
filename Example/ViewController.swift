@@ -20,7 +20,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func openCamera(_ sender: AnyObject) {
-        let cameraViewController = CameraViewController(allowsLibraryAccess: libraryEnabled) { [weak self] image, asset in
+        let cameraViewController = CameraViewController(allowsLibraryAccess: libraryEnabled) { [weak self] image in
+            print("camera finished")
             self?.imageView.image = image
             self?.dismiss(animated: true, completion: nil)
         }
@@ -29,7 +30,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func openLibrary(_ sender: AnyObject) {
-        let libraryViewController = CameraViewController.imagePickerViewController() { image, asset in
+        let libraryViewController = CameraViewController.imagePickerViewController() { image in
+            print("library finished")
             self.imageView.image = image
             self.dismiss(animated: true, completion: nil)
         }
