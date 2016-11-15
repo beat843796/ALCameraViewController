@@ -1,0 +1,18 @@
+/* 
+  ALCameraView.strings
+  ALCameraViewController
+
+  Created by Alex Littlejohn on 2015/06/25.
+  Copyright (c) 2015 zero. All rights reserved.
+*/
+
+"permissions.title" = "Zugriff auf Kamera verweigert";
+"permissions.description" = "Bitte erlauben Sie den Zugriff auf die Kamera in den Datenschutz EInstellungen";
+
+"permissions.library.title" = "Zugriff auf Fotos verweigert";
+"permissions.library.description" = "Bitte erlauben Sie den Zugriff auf die Fotos in den Datenschutz EInstellungen";
+
+"permissions.settings" = "Einstellungen";
+
+"error.cant-fetch-photo" = "Bild konnte nicht geladen werden";
+"error.cant-fetch-photo.description" = "Bitte überprüfen Sie Ihre Netzwerk Einstellungen";
