@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func openCamera(_ sender: AnyObject) {
-        let cameraViewController = CameraViewController(allowsLibraryAccess: libraryEnabled, maxImageSize: 2048.0) { [weak self] image in
+        let cameraViewController = CameraViewController(allowsLibraryAccess: libraryEnabled, maxImageSize: 1024.0) { [weak self] image in
           
             self?.imageView.image = image
             self?.dismiss(animated: true, completion: nil)
@@ -30,7 +30,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func openLibrary(_ sender: AnyObject) {
-        let libraryViewController = CameraViewController.imagePickerViewController(maxImageSize: 2048.0) { image in
+        let libraryViewController = CameraViewController.imagePickerViewController(maxImageSize: 1024.0) { image in
          
             self.imageView.image = image
             self.dismiss(animated: true, completion: nil)
