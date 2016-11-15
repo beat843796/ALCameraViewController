@@ -524,5 +524,5 @@ extension CameraViewController {
 //            constant: -padding)
 //        view.addConstraint(cameraOverlayEdgeTwoConstraint!)
 //    }
-//    
-//}
+//
+}

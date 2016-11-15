@@ -239,7 +239,7 @@ public class CameraViewController: UIViewController {
         configFlashEdgeButtonConstraint(statusBarOrientation)
         configFlashGravityButtonConstraint(statusBarOrientation)
         
-        let padding : CGFloat = portrait ? 16.0 : -16.0
+       // let padding : CGFloat = portrait ? 16.0 : -16.0
        // removeCameraOverlayEdgesConstraints()
 //        configCameraOverlayEdgeOneContraint(portrait, padding: padding)
 //        configCameraOverlayEdgeTwoConstraint(portrait, padding: padding)
