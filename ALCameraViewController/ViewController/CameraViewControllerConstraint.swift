@@ -446,83 +446,83 @@ extension CameraViewController {
      * it uses the height of the superview to create the width
      * of the CameraOverlay.
      */
-    func configCameraOverlayWidthConstraint(_ portrait: Bool) {
-        view.autoRemoveConstraint(cameraOverlayWidthConstraint)
-        cameraOverlayWidthConstraint = NSLayoutConstraint(
-            item: cameraOverlay,
-            attribute: portrait ? .height : .width,
-            relatedBy: .equal,
-            toItem: cameraOverlay,
-            attribute: portrait ? .width : .height,
-            multiplier: 1.0,
-            constant: 0)
-        view.addConstraint(cameraOverlayWidthConstraint!)
-    }
+//    func configCameraOverlayWidthConstraint(_ portrait: Bool) {
+//        view.autoRemoveConstraint(cameraOverlayWidthConstraint)
+//        cameraOverlayWidthConstraint = NSLayoutConstraint(
+//            item: cameraOverlay,
+//            attribute: portrait ? .height : .width,
+//            relatedBy: .equal,
+//            toItem: cameraOverlay,
+//            attribute: portrait ? .width : .height,
+//            multiplier: 1.0,
+//            constant: 0)
+//        view.addConstraint(cameraOverlayWidthConstraint!)
+//    }
     
     /**
      * This method will center the relative position of
      * CameraOverlay, based on the biggest size of the
      * superview.
      */
-    func configCameraOverlayCenterConstraint(_ portrait: Bool) {
-        view.autoRemoveConstraint(cameraOverlayCenterConstraint)
-        let attribute : NSLayoutAttribute = portrait ? .centerY : .centerX
-        cameraOverlayCenterConstraint = NSLayoutConstraint(
-            item: cameraOverlay,
-            attribute: attribute,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: attribute,
-            multiplier: 1.0,
-            constant: 0)
-        view.addConstraint(cameraOverlayCenterConstraint!)
-    }
-    
+//    func configCameraOverlayCenterConstraint(_ portrait: Bool) {
+//        view.autoRemoveConstraint(cameraOverlayCenterConstraint)
+//        let attribute : NSLayoutAttribute = portrait ? .centerY : .centerX
+//        cameraOverlayCenterConstraint = NSLayoutConstraint(
+//            item: cameraOverlay,
+//            attribute: attribute,
+//            relatedBy: .equal,
+//            toItem: view,
+//            attribute: attribute,
+//            multiplier: 1.0,
+//            constant: 0)
+//        view.addConstraint(cameraOverlayCenterConstraint!)
+//    }
+
     /**
      * Remove the CameraOverlay constraints to be updated when
      * the device was rotated.
      */
-    func removeCameraOverlayEdgesConstraints() {
-        view.autoRemoveConstraint(cameraOverlayEdgeOneConstraint)
-        view.autoRemoveConstraint(cameraOverlayEdgeTwoConstraint)
-    }
-    
+//    func removeCameraOverlayEdgesConstraints() {
+//        view.autoRemoveConstraint(cameraOverlayEdgeOneConstraint)
+//        view.autoRemoveConstraint(cameraOverlayEdgeTwoConstraint)
+//    }
+
     /**
      * It needs to get a determined smallest size of the screen
      to create the smallest size to be used on CameraOverlay.
      It uses the orientation of the screen to determinate where
      the view will be pinned.
      */
-    func configCameraOverlayEdgeOneContraint(_ portrait: Bool, padding: CGFloat) {
-        let attribute : NSLayoutAttribute = portrait ? .left : .bottom
-        cameraOverlayEdgeOneConstraint = NSLayoutConstraint(
-            item: cameraOverlay,
-            attribute: attribute,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: attribute,
-            multiplier: 1.0,
-            constant: padding)
-        view.addConstraint(cameraOverlayEdgeOneConstraint!)
-    }
-    
+//    func configCameraOverlayEdgeOneContraint(_ portrait: Bool, padding: CGFloat) {
+//        let attribute : NSLayoutAttribute = portrait ? .left : .bottom
+//        cameraOverlayEdgeOneConstraint = NSLayoutConstraint(
+//            item: cameraOverlay,
+//            attribute: attribute,
+//            relatedBy: .equal,
+//            toItem: view,
+//            attribute: attribute,
+//            multiplier: 1.0,
+//            constant: padding)
+//        view.addConstraint(cameraOverlayEdgeOneConstraint!)
+//    }
+
     /**
      * It needs to get a determined smallest size of the screen
      to create the smallest size to be used on CameraOverlay.
      It uses the orientation of the screen to determinate where
      the view will be pinned.
      */
-    func configCameraOverlayEdgeTwoConstraint(_ portrait: Bool, padding: CGFloat) {
-        let attributeTwo : NSLayoutAttribute = portrait ? .right : .top
-        cameraOverlayEdgeTwoConstraint = NSLayoutConstraint(
-            item: cameraOverlay,
-            attribute: attributeTwo,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: attributeTwo,
-            multiplier: 1.0,
-            constant: -padding)
-        view.addConstraint(cameraOverlayEdgeTwoConstraint!)
-    }
-    
-}
+//    func configCameraOverlayEdgeTwoConstraint(_ portrait: Bool, padding: CGFloat) {
+//        let attributeTwo : NSLayoutAttribute = portrait ? .right : .top
+//        cameraOverlayEdgeTwoConstraint = NSLayoutConstraint(
+//            item: cameraOverlay,
+//            attribute: attributeTwo,
+//            relatedBy: .equal,
+//            toItem: view,
+//            attribute: attributeTwo,
+//            multiplier: 1.0,
+//            constant: -padding)
+//        view.addConstraint(cameraOverlayEdgeTwoConstraint!)
+//    }
+//    
+//}
