@@ -395,7 +395,7 @@ public class ConfirmViewController: UIViewController {
     func showSpinner() -> UIActivityIndicatorView {
         let spinner = UIActivityIndicatorView()
         spinner.activityIndicatorViewStyle = .white
-        spinner.center = view.center
+        spinner.center = CGPoint(x: self.view.bounds.size.width/CGFloat(2.0), y: 40)
         spinner.startAnimating()
         
         view.addSubview(spinner)
