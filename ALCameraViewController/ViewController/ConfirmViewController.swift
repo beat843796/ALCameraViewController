@@ -25,6 +25,8 @@ public class ConfirmViewController: UIViewController {
     let greenButton = UIButton(type: .custom)
     let blueButton = UIButton(type: .custom)
 
+    var maxImageSize: CGFloat = 1024.0
+    
     var verticalPadding: CGFloat = 30
     var horizontalPadding: CGFloat = 30
     
@@ -36,21 +38,27 @@ public class ConfirmViewController: UIViewController {
     
     var chosenImage: UIImage!
     
-    public init(asset: PHAsset) {
+    public init(asset: PHAsset, maxImageSize:CGFloat) {
 
+        self.maxImageSize = maxImageSize
         self.asset = asset
         super.init(nibName: nil, bundle: nil)
     }
 
-    public init(image: UIImage) {
+    public init(image: UIImage, maxImageSize:CGFloat) {
         
-        self.image = image
+        
+        self.maxImageSize = maxImageSize
+        
         super.init(nibName: nil, bundle: nil)
+        
+        self.image = self.scaleImageToMaxSize(image: image, maxSize: self.maxImageSize)
     }
 
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        
     }
     
     public override var prefersStatusBarHidden: Bool {
@@ -144,7 +152,7 @@ public class ConfirmViewController: UIViewController {
             .setAsset(asset)
             .setTargetSize(largestPhotoSize())
             .onSuccess { image in
-                self.configureWithImage(image)
+                self.configureWithImage(self.scaleImageToMaxSize(image: image, maxSize: self.maxImageSize))
                 self.hideSpinner(spinner)
                 self.enable()
             }
@@ -264,6 +272,45 @@ public class ConfirmViewController: UIViewController {
             }, completion: nil)
     }
     
+    func scaleImageToMaxSize(image: UIImage, maxSize: CGFloat) -> UIImage {
+        
+   
+        
+        var scaledImageRect = CGRect.zero
+        
+        
+   
+            let ratio: CGFloat = image.size.width/image.size.height;
+            if (ratio > 1.0) {
+                scaledImageRect.size.width = maxSize;
+                scaledImageRect.size.height = CGFloat(roundf(Float(scaledImageRect.size.width / ratio)));
+            }
+            else {
+                scaledImageRect.size.height = maxSize;
+                scaledImageRect.size.width = CGFloat(roundf(Float(scaledImageRect.size.height * ratio)));
+            }
+        
+
+        let newSize: CGSize = scaledImageRect.size
+        
+        let aspectWidth = newSize.width/image.size.width
+        let aspectheight = newSize.height/image.size.height
+        
+        let aspectRatio = min(aspectWidth, aspectheight)
+        
+        scaledImageRect.size.width = image.size.width * aspectRatio;
+        scaledImageRect.size.height = image.size.height * aspectRatio;
+        scaledImageRect.origin.x = (newSize.width - scaledImageRect.size.width) / 2.0;
+        scaledImageRect.origin.y = (newSize.height - scaledImageRect.size.height) / 2.0;
+        
+        UIGraphicsBeginImageContext(newSize)
+        image.draw(in: scaledImageRect)
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return scaledImage!
+    }
+    
     private func configureWithImage(_ image: UIImage) {
   
         buttonActions()
@@ -317,7 +364,7 @@ public class ConfirmViewController: UIViewController {
         let firstImage = imageView.image!
         let secondImage = paintView.paintedImage()!
         
-        print("processing images")
+
         
         let newImageSize = CGSize(width: firstImage.size.width, height: firstImage.size.height)
         

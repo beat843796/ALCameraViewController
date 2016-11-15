@@ -13,7 +13,7 @@ import Photos
 public typealias CameraViewCompletion = (UIImage?) -> Void
 
 public extension CameraViewController {
-    public class func imagePickerViewController(completion: @escaping CameraViewCompletion) -> UINavigationController {
+    public class func imagePickerViewController(maxImageSize: CGFloat, completion: @escaping CameraViewCompletion) -> UINavigationController {
         let imagePicker = PhotoLibraryViewController()
         let navigationController = UINavigationController(rootViewController: imagePicker)
         
@@ -23,12 +23,12 @@ public extension CameraViewController {
 
         imagePicker.onSelectionComplete = { [weak imagePicker] asset in
             if let asset = asset {
-                let confirmController = ConfirmViewController(asset: asset)
+                let confirmController = ConfirmViewController(asset: asset, maxImageSize: maxImageSize)
                 confirmController.onComplete = { [weak imagePicker] image in
                     if let image = image {
                         completion(image)
                     } else {
-                        print("dismiss")
+                      
                         imagePicker?.dismiss(animated: true, completion: nil)
                     }
                 }
@@ -46,6 +46,7 @@ public extension CameraViewController {
 public class CameraViewController: UIViewController {
     
     public var saveImageToLibrary = false
+    public var maxImageSize: CGFloat = 1024.0
     
     var didUpdateViews = false
 
@@ -158,10 +159,10 @@ public class CameraViewController: UIViewController {
         return view
     }()
   
-    public init(allowsLibraryAccess: Bool = true, completion: @escaping CameraViewCompletion) {
+    public init(allowsLibraryAccess: Bool = true, maxImageSize: CGFloat, completion: @escaping CameraViewCompletion) {
         super.init(nibName: nil, bundle: nil)
         onCompletion = completion
-        
+        self.maxImageSize = maxImageSize
         libraryButton.isEnabled = allowsLibraryAccess
         libraryButton.isHidden = !allowsLibraryAccess
     }
@@ -485,7 +486,7 @@ public class CameraViewController: UIViewController {
                     self.saveImage(image: image)
                 }else {
                     
-                    let confirmViewController = ConfirmViewController(image: image)
+                    let confirmViewController = ConfirmViewController(image: image, maxImageSize:self.maxImageSize)
                     confirmViewController.onComplete = { image in
                         if let image = image {
                             self.onCompletion?(image)
@@ -521,7 +522,7 @@ public class CameraViewController: UIViewController {
     }
     
     internal func showLibrary() {
-        let imagePicker = CameraViewController.imagePickerViewController() { image in
+        let imagePicker = CameraViewController.imagePickerViewController(maxImageSize: self.maxImageSize) { image in
 
             defer {
                 self.dismiss(animated: true, completion: nil)
@@ -565,7 +566,7 @@ public class CameraViewController: UIViewController {
     }
     
     private func startConfirmController(asset: PHAsset) {
-        let confirmViewController = ConfirmViewController(asset: asset)
+        let confirmViewController = ConfirmViewController(asset: asset, maxImageSize:self.maxImageSize)
         confirmViewController.onComplete = { image in
             if let image = image {
                 self.onCompletion?(image)
