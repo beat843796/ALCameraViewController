@@ -462,6 +462,7 @@ public class ConfirmViewController: UIViewController {
         redButton.isEnabled = false
         greenButton.isEnabled = false
         blueButton.isEnabled = false
+        paintView.isUserInteractionEnabled = false
     }
     
     func enable() {
@@ -470,6 +471,7 @@ public class ConfirmViewController: UIViewController {
         redButton.isEnabled = true
         greenButton.isEnabled = true
         blueButton.isEnabled = true
+        paintView.isUserInteractionEnabled = true
     }
     
     func showNoImageScreen(_ error: NSError) {
