@@ -358,7 +358,7 @@ public class ConfirmViewController: UIViewController {
     
     internal func processImages() {
         
-        chosenImage = imageView.image!
+        chosenImage = self.image
         
         let secondImage = paintView.paintedImage()
         
