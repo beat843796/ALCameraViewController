@@ -425,7 +425,7 @@ public class ConfirmViewController: UIViewController {
                     self.hideSpinner(spinner)
                     self.showNoImageScreen(error)
                 }
-                .setAsset(asset)
+                //.setAsset(asset)
             
             
             
