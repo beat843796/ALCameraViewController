@@ -312,12 +312,9 @@ public class ConfirmViewController: UIViewController {
     }
     
     private func configureWithImage(_ image: UIImage) {
-  
+
+        self.image = image
         buttonActions()
-        
-        
-        
-        
         imageView.image = image
         imageView.sizeToFit()
         view.setNeedsLayout()
@@ -361,20 +358,26 @@ public class ConfirmViewController: UIViewController {
     
     internal func processImages() {
         
-        let firstImage = imageView.image!
-        let secondImage = paintView.paintedImage()!
+        chosenImage = imageView.image!
         
-
+        let secondImage = paintView.paintedImage()
         
-        let newImageSize = CGSize(width: firstImage.size.width, height: firstImage.size.height)
+        if(secondImage != nil) {
+            
+            print("has painting")
+            
+            let newImageSize = CGSize(width: chosenImage.size.width, height: chosenImage.size.height)
+            
+            UIGraphicsBeginImageContextWithOptions(newImageSize, false, UIScreen.main.scale)
+            
+            chosenImage.draw(in: CGRect(x: 0, y: 0, width: newImageSize.width, height: newImageSize.height))
+            secondImage!.draw(in: CGRect(x: 0, y: 0, width: newImageSize.width, height: newImageSize.height))
+            
+            chosenImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+        }
         
-        UIGraphicsBeginImageContextWithOptions(newImageSize, false, UIScreen.main.scale)
         
-        firstImage.draw(in: CGRect(x: 0, y: 0, width: newImageSize.width, height: newImageSize.height))
-        secondImage.draw(in: CGRect(x: 0, y: 0, width: newImageSize.width, height: newImageSize.height))
-        
-        chosenImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
         
     }
     
@@ -383,23 +386,27 @@ public class ConfirmViewController: UIViewController {
         disable()
         
         
+        //imageView.isHidden = true
+        paintView.isUserInteractionEnabled = false
         
         let spinner = showSpinner()
 
-        if(paintView.hasPainting) {
+       
             
-  
+
             
             DispatchQueue.global(qos: .background).async { [weak self]
                 () -> Void in
  
-                    self?.processImages()
+                print("processing images")
                 
+                    self?.processImages()
+                print("image size \(self?.chosenImage.size)")
                             DispatchQueue.main.async {
                                 () -> Void in
                                 
                                 self?.onComplete?(self?.chosenImage)
-                                
+                                print("done processing")
                                 self?.hideSpinner(spinner)
                                 
                             }
@@ -411,27 +418,7 @@ public class ConfirmViewController: UIViewController {
             
             
             
-        }else {
-            imageView.isHidden = true
-            paintView.isHidden = true
-            
-            var fetcher = SingleImageFetcher()
-                .onSuccess { image in
-                    self.onComplete?(image)
-                    self.hideSpinner(spinner)
-                    self.enable()
-                }
-                .onFailure { error in
-                    self.hideSpinner(spinner)
-                    self.showNoImageScreen(error)
-                }
-                //.setAsset(asset)
-            
-            
-            
-            fetcher = fetcher.fetch()
-            
-        }
+        
             
         
         
