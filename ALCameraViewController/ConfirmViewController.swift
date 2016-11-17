@@ -18,8 +18,8 @@ public class ConfirmViewController: UIViewController {
     let cancelButton = UIButton(type: .custom)
     let confirmButton = UIButton(type: .custom)
     
-    let clearButton = UIButton(type: .custom)
-    let earseButton = UIButton(type: .custom)
+   
+   
     
     let redButton = UIButton(type: .custom)
     let greenButton = UIButton(type: .custom)
@@ -53,11 +53,18 @@ public class ConfirmViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.image = self.scaleImageToMaxSize(image: image, maxSize: self.maxImageSize)
+        
+        
     }
 
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        
+    }
+    
+    deinit {
+        print("confirm deinit")
         
     }
     
@@ -72,11 +79,12 @@ public class ConfirmViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
         
        self.view.addSubview(imageView)
         
         self.view.addSubview(paintView)
+        
         paintView.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
         
         imageView.contentMode = .scaleAspectFit
@@ -91,11 +99,7 @@ public class ConfirmViewController: UIViewController {
                                        compatibleWith: nil),
                                for: .normal)
         
-        clearButton.tintColor = .white
-        clearButton.setImage(UIImage(named: "clearButton",
-                                                  in: CameraGlobals.shared.bundle,
-                                                  compatibleWith: nil)?.withRenderingMode(.alwaysTemplate),
-                                          for: .normal)
+
         
         
         
@@ -124,7 +128,7 @@ public class ConfirmViewController: UIViewController {
         self.view.addSubview(confirmButton)
         self.view.addSubview(cancelButton)
 
-        self.view.addSubview(clearButton)
+
         self.view.addSubview(redButton)
         self.view.addSubview(greenButton)
         self.view.addSubview(blueButton)
@@ -162,15 +166,7 @@ public class ConfirmViewController: UIViewController {
             .fetch()
     }
     
-    private func clearButtonPressed() {
-        
-        // clear drawing in paintview
-        
-        paintView.clearDrawing()
-        
-        redButtonPressed()
-        
-    }
+
     
     private func redButtonPressed() {
         
@@ -214,23 +210,24 @@ public class ConfirmViewController: UIViewController {
         
         let buttonWidth: CGFloat = 80.0
         
-        cancelButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonWidth)
-        confirmButton.frame = CGRect(x: self.view.bounds.size.width-CGFloat(buttonWidth), y: 0, width: buttonWidth, height: buttonWidth)
+        
+        
         
         //
         
         
-        let bottomToolsHeight: CGFloat = 50
-        let toolWidth: CGFloat = self.view.bounds.size.width/CGFloat(5.0)
+        let bottomToolsHeight: CGFloat = 80
+        let toolWidth: CGFloat = (self.view.bounds.size.width-buttonWidth-buttonWidth)/CGFloat(3.0)
         let toolsY = self.view.bounds.size.height-bottomToolsHeight
 
-        clearButton.frame = CGRect(x: CGFloat(0) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
+        cancelButton.frame = CGRect(x: 0, y: toolsY, width: buttonWidth, height: buttonWidth)
         redButton.frame = CGRect(x: CGFloat(1) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
         greenButton.frame = CGRect(x: CGFloat(2) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
         blueButton.frame = CGRect(x: CGFloat(3) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
+        confirmButton.frame = CGRect(x: self.view.bounds.size.width-CGFloat(buttonWidth), y: toolsY, width: buttonWidth, height: buttonWidth)
         
-        
-        imageView.frame = CGRect(origin: CGPoint(x: 0, y: buttonWidth), size: CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height-buttonWidth-bottomToolsHeight))
+        imageView.backgroundColor = .black
+        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height-bottomToolsHeight))
         
         if(imageView.image != nil) {
             
@@ -245,7 +242,7 @@ public class ConfirmViewController: UIViewController {
             let scaledImageSize = CGSize(width: imageSize.width*CGFloat(imageScale), height: imageSize.height*CGFloat(imageScale))
             
             let imageFrameX = CGFloat(roundf(Float(0.5)*Float(imageView.bounds.size.width-scaledImageSize.width)))
-            let imageFrameY = CGFloat(roundf(Float(0.5)*Float(imageView.bounds.size.height-scaledImageSize.height))+Float(80))
+            let imageFrameY = CGFloat(roundf(Float(0.5)*Float(imageView.bounds.size.height-scaledImageSize.height)))
             
             let imageFrame = CGRect(x:imageFrameX , y: imageFrameY, width: CGFloat(roundf(Float(scaledImageSize.width))), height: CGFloat(roundf(Float(scaledImageSize.height))))
             
@@ -346,14 +343,25 @@ public class ConfirmViewController: UIViewController {
     private func buttonActions() {
         confirmButton.action = { [weak self] in self?.confirmPhoto() }
         cancelButton.action = { [weak self] in self?.cancel() }
-        clearButton.action = { [weak self] in self?.clearButtonPressed() }
+        
         redButton.action = { [weak self] in self?.redButtonPressed() }
         greenButton.action = { [weak self] in self?.greenButtonPressed() }
         blueButton.action = { [weak self] in self?.blueButtonPressed() }
     }
     
     internal func cancel() {
-        onComplete?(nil)
+        
+        if(paintView.hasPainting) {
+            
+            paintView.clearDrawing()
+            //redButtonPressed()
+            
+        }else {
+            onComplete?(nil)
+        }
+            
+        
+        
     }
     
     internal func processImages() {
@@ -385,6 +393,7 @@ public class ConfirmViewController: UIViewController {
         
         disable()
         
+       
         
         //imageView.isHidden = true
         paintView.isUserInteractionEnabled = false
@@ -392,9 +401,10 @@ public class ConfirmViewController: UIViewController {
         let spinner = showSpinner()
 
        
-            
-
-            
+//            self.processImages()
+//self.onComplete?(self.chosenImage)
+//        self.hideSpinner(spinner)
+        
             DispatchQueue.global(qos: .background).async { [weak self]
                 () -> Void in
  
@@ -404,16 +414,17 @@ public class ConfirmViewController: UIViewController {
                 print("image size \(self?.chosenImage.size)")
                             DispatchQueue.main.async {
                                 () -> Void in
-                                
-                                self?.onComplete?(self?.chosenImage)
-                                print("done processing")
                                 self?.hideSpinner(spinner)
+                                print("done processing")
+                                self?.onComplete?(self?.chosenImage)
+                                
+                                
                                 
                             }
 
                 
             }
-            
+        
 
             
             
@@ -428,8 +439,8 @@ public class ConfirmViewController: UIViewController {
     
     func showSpinner() -> UIActivityIndicatorView {
         let spinner = UIActivityIndicatorView()
-        spinner.activityIndicatorViewStyle = .white
-        spinner.center = CGPoint(x: self.view.bounds.size.width/CGFloat(2.0), y: 40)
+        spinner.activityIndicatorViewStyle = .whiteLarge
+        spinner.center = self.view.center//CGPoint(x: self.view.bounds.size.width/CGFloat(2.0), y: 40)
         spinner.startAnimating()
         
         view.addSubview(spinner)
@@ -445,7 +456,7 @@ public class ConfirmViewController: UIViewController {
     
     func disable() {
         confirmButton.isEnabled = false
-        clearButton.isEnabled = false
+        
         redButton.isEnabled = false
         greenButton.isEnabled = false
         blueButton.isEnabled = false
@@ -454,7 +465,7 @@ public class ConfirmViewController: UIViewController {
     
     func enable() {
         confirmButton.isEnabled = true
-        clearButton.isEnabled = true
+        
         redButton.isEnabled = true
         greenButton.isEnabled = true
         blueButton.isEnabled = true

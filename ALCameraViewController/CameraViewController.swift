@@ -81,10 +81,7 @@ public class CameraViewController: UIViewController {
     var flashButtonEdgeConstraint: NSLayoutConstraint?
     var flashButtonGravityConstraint: NSLayoutConstraint?
     
-//    var cameraOverlayEdgeOneConstraint: NSLayoutConstraint?
-//    var cameraOverlayEdgeTwoConstraint: NSLayoutConstraint?
-//    var cameraOverlayWidthConstraint: NSLayoutConstraint?
-//    var cameraOverlayCenterConstraint: NSLayoutConstraint?
+
     
     let cameraView : CameraView = {
         let cameraView = CameraView()
@@ -92,11 +89,7 @@ public class CameraViewController: UIViewController {
         return cameraView
     }()
     
-//    let cameraOverlay : CropOverlay = {
-//        let cameraOverlay = CropOverlay()
-//        cameraOverlay.translatesAutoresizingMaskIntoConstraints = false
-//        return cameraOverlay
-//    }()
+
     
     let cameraButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 64, height: 64))
@@ -172,7 +165,8 @@ public class CameraViewController: UIViewController {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        print("cam deinit")
+        
     }
     
     public override var prefersStatusBarHidden: Bool {
@@ -263,12 +257,12 @@ public class CameraViewController: UIViewController {
      */
     public override func viewDidLoad() {
         super.viewDidLoad()
-        addCameraObserver()
-        addRotateObserver()
+        
         setupVolumeControl()
         setupActions()
         checkPermissions()
         cameraView.configureFocus()
+        
     }
 
     /**
@@ -276,7 +270,15 @@ public class CameraViewController: UIViewController {
      */
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         cameraView.startSession()
+        
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+        cameraView.stopSession()
     }
     
     /**
@@ -285,8 +287,11 @@ public class CameraViewController: UIViewController {
      */
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         if cameraView.session?.isRunning == true {
             notifyCameraReady()
+            addCameraObserver()
+            addRotateObserver()
         }
     }
     
@@ -485,7 +490,7 @@ public class CameraViewController: UIViewController {
                 if(self.saveImageToLibrary == true) {
                     self.saveImage(image: image)
                 }else {
-                    
+                    //self.cameraView.stopSession()
                     let confirmViewController = ConfirmViewController(image: image, maxImageSize:self.maxImageSize)
                     confirmViewController.onComplete = { image in
                         if let image = image {
@@ -496,7 +501,7 @@ public class CameraViewController: UIViewController {
                     }
                     confirmViewController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
                     self.present(confirmViewController, animated: true, completion: nil)
-                    
+                    self.toggleButtons(enabled: true)
                 }
                 
                 
@@ -518,6 +523,7 @@ public class CameraViewController: UIViewController {
     }
     
     internal func close() {
+        //self.dismiss(animated: true, completion: nil)
         onCompletion?(nil)
     }
     
@@ -536,7 +542,7 @@ public class CameraViewController: UIViewController {
         }
         
         present(imagePicker, animated: true) {
-            self.cameraView.stopSession()
+            //self.cameraView.stopSession()
         }
     }
     
@@ -560,7 +566,7 @@ public class CameraViewController: UIViewController {
     }
     
     internal func layoutCameraResult(asset: PHAsset) {
-        cameraView.stopSession()
+        //cameraView.stopSession()
         startConfirmController(asset: asset)
         toggleButtons(enabled: true)
     }

@@ -35,6 +35,10 @@ public class PhotoLibraryViewController: UIViewController {
         return collectionView
     }()
     
+    deinit {
+        print("photolib deinit")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         

@@ -24,6 +24,7 @@ class ViewController: UIViewController {
           
             self?.imageView.image = image
             self?.dismiss(animated: true, completion: nil)
+            print("finished")
         }
         
         present(cameraViewController, animated: true, completion: nil)
@@ -34,6 +35,7 @@ class ViewController: UIViewController {
          
             self.imageView.image = image
             self.dismiss(animated: true, completion: nil)
+            print("finished")
         }
         
         present(libraryViewController, animated: true, completion: nil)
