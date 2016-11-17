@@ -241,7 +241,7 @@ public class CameraViewController: UIViewController {
 //        configCameraOverlayWidthConstraint(portrait)
 //        configCameraOverlayCenterConstraint(portrait)
         
-        rotate(actualInterfaceOrientation: statusBarOrientation)
+        //rotate(actualInterfaceOrientation: statusBarOrientation)
         
         super.updateViewConstraints()
     }
