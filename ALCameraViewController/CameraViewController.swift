@@ -50,7 +50,7 @@ public class CameraViewController: UIViewController {
     
     var didUpdateViews = false
 
-    var animationRunning = false
+    //var animationRunning = false
     
     var lastInterfaceOrientation : UIInterfaceOrientation?
     var onCompletion: CameraViewCompletion?
@@ -301,9 +301,9 @@ public class CameraViewController: UIViewController {
     override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
          lastInterfaceOrientation = UIApplication.shared.statusBarOrientation
-        if animationRunning {
-            return
-        }
+//        if animationRunning {
+//            return
+//        }
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         coordinator.animate(alongsideTransition: { animation in
@@ -384,43 +384,43 @@ public class CameraViewController: UIViewController {
      * This method will rotate the buttons based on
      * the last and actual orientation of the device.
      */
-    internal func rotate(actualInterfaceOrientation: UIInterfaceOrientation) {
-        
-        if lastInterfaceOrientation != nil {
-            let lastTransform = CGAffineTransform(rotationAngle: CGFloat(radians(currentRotation(
-                lastInterfaceOrientation!, newOrientation: actualInterfaceOrientation))))
-            self.setTransform(transform: lastTransform)
-        }
-
-        let transform = CGAffineTransform(rotationAngle: 0)
-        animationRunning = true
-        
-        /**
-         * Dispach delay to avoid any conflict between the CATransaction of rotation of the screen
-         * and CATransaction of animation of buttons.
-         */
-
-        let time: DispatchTime = DispatchTime.now() + Double(1 * UInt64(NSEC_PER_SEC)/10)
-        DispatchQueue.main.asyncAfter(deadline: time) {
-            
-            CATransaction.begin()
-            CATransaction.setDisableActions(false)
-            CATransaction.commit()
-            
-            UIView.animate(
-                withDuration: self.animationDuration,
-                delay: 0.1,
-                usingSpringWithDamping: self.animationSpring,
-                initialSpringVelocity: 0,
-                options: self.rotateAnimation,
-                animations: {
-                self.setTransform(transform: transform)
-                }, completion: { _ in
-                    self.animationRunning = false
-            })
-            
-        }
-    }
+//    internal func rotate(actualInterfaceOrientation: UIInterfaceOrientation) {
+//        
+//        if lastInterfaceOrientation != nil {
+//            let lastTransform = CGAffineTransform(rotationAngle: CGFloat(radians(currentRotation(
+//                lastInterfaceOrientation!, newOrientation: actualInterfaceOrientation))))
+//            self.setTransform(transform: lastTransform)
+//        }
+//
+//        let transform = CGAffineTransform(rotationAngle: 0)
+//        animationRunning = true
+//        
+//        /**
+//         * Dispach delay to avoid any conflict between the CATransaction of rotation of the screen
+//         * and CATransaction of animation of buttons.
+//         */
+//
+//        let time: DispatchTime = DispatchTime.now() + Double(1 * UInt64(NSEC_PER_SEC)/10)
+//        DispatchQueue.main.asyncAfter(deadline: time) {
+//            
+//            CATransaction.begin()
+//            CATransaction.setDisableActions(false)
+//            CATransaction.commit()
+//            
+//            UIView.animate(
+//                withDuration: self.animationDuration,
+//                delay: 0.1,
+//                usingSpringWithDamping: self.animationSpring,
+//                initialSpringVelocity: 0,
+//                options: self.rotateAnimation,
+//                animations: {
+//                self.setTransform(transform: transform)
+//                }, completion: { _ in
+//                    self.animationRunning = false
+//            })
+//            
+//        }
+//    }
     
     func setTransform(transform: CGAffineTransform) {
         self.closeButton.transform = transform

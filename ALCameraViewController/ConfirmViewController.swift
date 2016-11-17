@@ -216,18 +216,18 @@ public class ConfirmViewController: UIViewController {
         //
         
         
-        let bottomToolsHeight: CGFloat = 80
+       
         let toolWidth: CGFloat = (self.view.bounds.size.width-buttonWidth-buttonWidth)/CGFloat(3.0)
-        let toolsY = self.view.bounds.size.height-bottomToolsHeight
+        let toolsY = self.view.bounds.size.height-buttonWidth
 
         cancelButton.frame = CGRect(x: 0, y: toolsY, width: buttonWidth, height: buttonWidth)
-        redButton.frame = CGRect(x: CGFloat(1) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
-        greenButton.frame = CGRect(x: CGFloat(2) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
-        blueButton.frame = CGRect(x: CGFloat(3) * toolWidth, y: toolsY, width: toolWidth, height: bottomToolsHeight)
+        redButton.frame = CGRect(x: CGFloat(0) * toolWidth+buttonWidth, y: toolsY, width: toolWidth, height: buttonWidth)
+        greenButton.frame = CGRect(x: CGFloat(1) * toolWidth+buttonWidth, y: toolsY, width: toolWidth, height: buttonWidth)
+        blueButton.frame = CGRect(x: CGFloat(2) * toolWidth+buttonWidth, y: toolsY, width: toolWidth, height: buttonWidth)
         confirmButton.frame = CGRect(x: self.view.bounds.size.width-CGFloat(buttonWidth), y: toolsY, width: buttonWidth, height: buttonWidth)
         
         imageView.backgroundColor = .black
-        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height-bottomToolsHeight))
+        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height-buttonWidth))
         
         if(imageView.image != nil) {
             
